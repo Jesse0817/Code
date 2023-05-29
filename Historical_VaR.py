@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[3]:
-
+#import package
 
 import pandas as pd
 import numpy as np 
@@ -13,8 +9,9 @@ import yfinance as yf
 yf.pdr_override()
 
 
-# In[10]:
 
+#choosing stocks
+#setting data
 
 stocklist=['CBA', 'BHP', 'TLS', 'NAB', 'WBC', 'STO']
 stocks=[stock + '.AX' for stock in stocklist]
@@ -22,8 +19,8 @@ endDate=dt.datetime.now()
 startDate=endDate-dt.timedelta(days=800)
 
 
-# In[31]:
 
+#calculating returns, weight, VaR, and Conditional VaR by fuctions 
 
 returns, meanReturns, covMatrix = get_data(stocks, startDate, endDate)
 returns = returns.dropna()
@@ -37,8 +34,8 @@ VaR = historicalVaR(returns['portfolio'], alpha=5)
 CVaR = historicalCVaR(returns['portfolio'], alpha=5)
 
 
-# In[36]:
 
+#with windows (252 days)
 
 Time = 252
 
@@ -53,8 +50,9 @@ print('VaR 95th CI               : ', round(initialInvestment * VaR, 2))
 print('Conditional VaR 95th CI   : ', round(initialInvestment * CVaR, 2))
 
 
-# In[12]:
 
+#functions:
+#getting returns, meanReturns, and covMatrix from yahoo
 
 def get_data(stocks, start, end):
     stockData=pdr.get_data_yahoo(stocks, start, end)
@@ -65,8 +63,8 @@ def get_data(stocks, start, end):
     return returns, meanReturns, covMatrix
 
 
-# In[5]:
 
+#calculating returns and std from portfolio
 
 def portfolioPerformance(weights, meanReturns, covMatrix, Time):
     returns = np.sum(meanReturns * weights) * Time
@@ -74,8 +72,8 @@ def portfolioPerformance(weights, meanReturns, covMatrix, Time):
     return returns, std
 
 
-# In[24]:
 
+#calculating VaR with historical method
 
 def historicalVaR(returns, alpha=5):
     if isinstance(returns, pd.Series):
@@ -84,11 +82,10 @@ def historicalVaR(returns, alpha=5):
         return returns.aggregate(historicalVaR, alpha=5)
     else:
         raise TypeError("Expected returns to be dataframe or series")
-    
 
 
-# In[28]:
-
+        
+#calculating Conditional VaR with historical method
 
 def historicalCVaR(returns, alpha=5):
     if isinstance(returns, pd.Series):
@@ -99,21 +96,6 @@ def historicalCVaR(returns, alpha=5):
     else:
         raise TypeError("Expected returns to be dataframe or series")
 
-
-# In[1]:
-
-
+#pip install:
 pip install pandas-datareader
-
-
-# In[2]:
-
-
 pip install yfinance
-
-
-# In[ ]:
-
-
-
-
